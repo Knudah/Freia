@@ -1,0 +1,134 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/stylesheet">
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+</script>
+<script type="text/javascript">
+
+function inEdges(edges, e){
+    id =  e.source + "-" + e.target;
+    for(var j = 0; j < edges.length; j++){
+        f = edges[j];
+        f_id = f.source.index + "-" + f.target.index; 
+        if(f_id === id){
+            return true 
+        }
+    }
+    return false
+}
+
+function updateEdges(graph, edges){
+    for(var i = 0; i < edges.length; i++){
+        e = edges[i]
+        if(!inEdges(graph.Edges, e)){
+            graph.Edges.push(e);
+        }
+    }
+    return graph
+}
+
+function inNodes(nodes, n){
+    for(var j = 0; j < nodes.length; j++){
+        m = nodes[j];
+        if(m.id  === n.id){
+            return true
+        } 
+    }
+    return false 
+}
+
+function updateNodes(graph, nodes){
+    for(var i = 0; i < nodes.length; i++){
+        n = nodes[i]
+        if(!inNodes(graph.Nodes,n)){
+            graph.Nodes.push(n) 
+        }
+    }
+    return graph
+}
+
+
+window.onload = function() {
+    
+    var width = window.innerWidth,
+        height = window.innerHeight;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var color = d3.scale.category20();
+
+    var force = d3.layout.force()
+        .charge(-30)
+        .linkDistance(30)
+        .size([width, height]);
+
+    var graph, edge, edgeEnter, node; 
+
+    var graph= {Nodes:[], Edges:[]}; 
+
+    var ws = new WebSocket("ws://localhost:4040/graph");
+
+    ws.onopen = function() {
+        ws.send("");
+    };
+
+
+
+    ws.onmessage = function(msg) {
+        updatedGraph = $.parseJSON(msg.data)
+        graph = updateNodes(graph, updatedGraph.Nodes) 
+        graph = updateEdges(graph, updatedGraph.Edges) 
+
+
+        force
+            .nodes(graph.Nodes)
+            .links(graph.Edges) 
+            .start(); 
+
+        edge = svg.selectAll(".link")
+            .data(graph.Edges, function(d) {
+              return d.source.id + "-" + d.target.id;
+            });
+
+        edgeEnter = edge.enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width", 2)
+            .style("stroke", "#999")
+            .style("stroke-opacity", ".6")
+        
+        node = svg.selectAll(".node")
+            .data(graph.Nodes); 
+
+        
+        nodeEnter = node.enter().append("circle")
+            .attr("class", "node")
+            .attr("r", 4) 
+            .style("fill", function(d){
+                  return color(d.id);
+                  }) 
+            .call(force.drag) 
+            
+        force.on("tick", function() {
+            edge.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            node.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });
+    };
+};
+</script>
+</head>
+<body>
+</body>
+</html>
