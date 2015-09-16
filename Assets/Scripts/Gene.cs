@@ -1,19 +1,27 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Gene : MonoBehaviour
 {
+	public string name;
+	public string description;
+	public int id;
+	public int xPosition;
+	public int yPosition;
+	public int width;
+	public int height;
+	public List<int> edges;
 
-	// Use this for initialization
-	void Start ()
-	{
+	public void colorize() {
 	
 	}
+
+	public void highlight() {
 	
-	// Update is called once per frame
-	void Update ()
-	{
+	}
+
+	public void clearHighlight() {
 	
 	}
 }
-

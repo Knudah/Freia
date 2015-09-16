@@ -3,10 +3,15 @@ using System.Collections;
 
 public class Pathway : MonoBehaviour
 {
-	public int imageWidth;
-	public int imageHeight;
+	public string name;
+	public string description;
+	public int width;
+	public int height;
+	public int xPosition;
+	public int yPosition;
 
-
-
+	void Start() {
+		
+	}
 }
 

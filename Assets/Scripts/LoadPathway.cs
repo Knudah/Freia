@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using LitJson;
 
 public class LoadPathway : MonoBehaviour {
 	public string pathwayId;
 	public Image pathwayImage;
+	public Transform geneBox;
+	public Transform pathwayBox;
 
 	public void Start() {
-		Debug.Log ("PathwayStart");
+//		Debug.Log ("PathwayStart");
 		pathwayImage = gameObject.transform.GetComponent<Image>();
-		Debug.Log("GetImage");
+		GetPathwayKGML ();
+		//		Debug.Log("GetImage");
 		GetPathwayImage ();
-		Debug.Log("StartDone");
-//		GetPathwayKGML ();
+//		Debug.Log("StartDone");
+
 	}
 
 	public void GetPathwayImage() {
 		string url = "http://localhost:8080/public/pathways/" + pathwayId + ".png";
-//		Debug.Log (url);
+		Debug.Log (url);
 		WWW www = new WWW(url);
 		StartCoroutine(WaitForImageRequest(www));
 	}
@@ -31,15 +35,19 @@ public class LoadPathway : MonoBehaviour {
 
 	IEnumerator WaitForImageRequest(WWW www) {
 		yield return www;
-		Texture2D texture = new Texture2D (100, 100);
+
 		// check for errors
 		if (www.error == null) {
+			Texture2D texture = new Texture2D (www.texture.width, www.texture.height);
+//			gameObject.GetComponent<RectTransform>().rect = new Rect(0,0, texture.width, texture.height);
 //			Debug.Log("WWW Ok!: " + www.texture);
-			Debug.Log("LoadImageIntoTexture");
+//			Debug.Log("LoadImageIntoTexture");
+			Debug.Log("YOLO"+www.texture.width + "," + www.texture.height);
+
 			www.LoadImageIntoTexture(texture);
-			Debug.Log("GetComponent");
+//			Debug.Log("GetComponent");
 			gameObject.GetComponent<Image> ().sprite = Sprite.Create(texture, new Rect(0,0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-			Debug.Log("Done");
+//			Debug.Log("Done");
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		} 
@@ -50,9 +58,59 @@ public class LoadPathway : MonoBehaviour {
 		// check for errors
 		if (www.error == null) {
 			Debug.Log("WWW Ok!: " + www.text);
-			//			ParseJson(www.text);
+			ParseJson(www.text);
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		} 
 	}
+
+	private void ParseJson(string json) {
+		JsonData objs = JsonMapper.ToObject (json);
+		if (objs[0] == null) {
+			Debug.Log ("Could not find result!");
+			return;
+		}
+
+		Debug.Log (objs [0].Count);
+		for (int i = 0; i < objs[0].Count; i++) {
+			if (objs[0][i]["shape"].ToString().Contains("roundrectangle")){
+				createPathwayInformation(objs[0][i]);
+				Debug.Log("pathway");
+			} else if (objs[0][i]["shape"].ToString().Contains("rectangle")){
+				Debug.Log("gene");
+
+			} else if (objs[0][i]["shape"].ToString().Contains("circle")){
+				Debug.Log("compound");
+			} else {
+				Debug.Log("what am I?");
+			}
+		}
+
+		for (int i = 0; i < objs[1].Count; i++) {
+			gameObject.GetComponent<Pathway>().width = 360;
+		}
+	}
+
+	private void createPathwayInformation(JsonData data) {
+//		Transform cam = Camera.main.transform;
+//		Vector3 cameraRelative = cam.InverseTransformPoint (transform.position);
+		Debug.Log("Pathway: " + data["name"].ToString() + " pos: " + data["x"].ToString() + "," + data["y"].ToString());
+		Transform p = (Transform) Instantiate (pathwayBox, gameObject.transform.position, gameObject.transform.rotation);
+		p.SetParent(gameObject.transform);
+		p.gameObject.GetComponent<Pathway>().name = data["name"].ToString();
+		p.gameObject.GetComponent<Pathway>().description = data["description"].ToString();
+		p.gameObject.GetComponent<Pathway>().xPosition = int.Parse(data["x"].ToString());
+		p.gameObject.GetComponent<Pathway>().yPosition = int.Parse(data["y"].ToString());
+		p.gameObject.GetComponent<Pathway>().width = int.Parse(data["width"].ToString());
+		p.gameObject.GetComponent<Pathway>().height = int.Parse(data["height"].ToString());
+		p.gameObject.AddComponent<BoxCollider2D>();
+		p.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(int.Parse(data["width"].ToString()), int.Parse(data["height"].ToString()));
+		p.gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(int.Parse(data["x"].ToString()), int.Parse(data["y"].ToString()) *-1);
+	}
+
+	private void createGeneInformation(JsonData data){
+		Transform g = (Transform) Instantiate (geneBox, gameObject.transform.position, gameObject.transform.rotation);
+		g.SetParent(gameObject.transform);
+	}
+
 }
