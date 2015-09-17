@@ -8,6 +8,8 @@ public class LoadPathway : MonoBehaviour {
 	public Image pathwayImage;
 	public Transform geneBox;
 	public Transform pathwayBox;
+	private int width;
+	private int height;
 
 	public void Start() {
 //		Debug.Log ("PathwayStart");
@@ -38,15 +40,20 @@ public class LoadPathway : MonoBehaviour {
 
 		// check for errors
 		if (www.error == null) {
-			Texture2D texture = new Texture2D (www.texture.width, www.texture.height);
-//			gameObject.GetComponent<RectTransform>().rect = new Rect(0,0, texture.width, texture.height);
+			width = www.texture.width;
+			height = www.texture.height;
+			Texture2D texture = new Texture2D (width, height);
+			gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
+			gameObject.AddComponent<BoxCollider2D>();
+			gameObject.GetComponent<BoxCollider2D>().size = new Vector2(width, height);
+//			gameObject.transform.localScale = new Vector2(width/Screen.width, height/Screen.height);
 //			Debug.Log("WWW Ok!: " + www.texture);
 //			Debug.Log("LoadImageIntoTexture");
-			Debug.Log("YOLO"+www.texture.width + "," + www.texture.height);
+//			Debug.Log("YOLO"+www.texture.width + "," + www.texture.height);
 
 			www.LoadImageIntoTexture(texture);
 //			Debug.Log("GetComponent");
-			gameObject.GetComponent<Image> ().sprite = Sprite.Create(texture, new Rect(0,0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+			gameObject.GetComponent<Image> ().sprite = Sprite.Create(texture, new Rect(0,0, width, height), new Vector2(0.5f, 0.5f));
 //			Debug.Log("Done");
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
@@ -94,7 +101,7 @@ public class LoadPathway : MonoBehaviour {
 	private void createPathwayInformation(JsonData data) {
 //		Transform cam = Camera.main.transform;
 //		Vector3 cameraRelative = cam.InverseTransformPoint (transform.position);
-		Debug.Log("Pathway: " + data["name"].ToString() + " pos: " + data["x"].ToString() + "," + data["y"].ToString());
+		Debug.Log("Pathway: " + data["name"].ToString() + " pos: " + data["x"].ToString() + "," + data["y"].ToString() + " new pos: " + int.Parse(data["x"].ToString()) /100 + "," + int.Parse(data["y"].ToString())/100 );
 		Transform p = (Transform) Instantiate (pathwayBox, gameObject.transform.position, gameObject.transform.rotation);
 		p.SetParent(gameObject.transform);
 		p.gameObject.GetComponent<Pathway>().name = data["name"].ToString();
@@ -106,6 +113,12 @@ public class LoadPathway : MonoBehaviour {
 		p.gameObject.AddComponent<BoxCollider2D>();
 		p.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(int.Parse(data["width"].ToString()), int.Parse(data["height"].ToString()));
 		p.gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(int.Parse(data["x"].ToString()), int.Parse(data["y"].ToString()) *-1);
+		p.gameObject.transform.localScale = new Vector2(1, 1);
+		p.gameObject.AddComponent<AspectRatioFitter> ();
+		p.gameObject.GetComponent<AspectRatioFitter> ().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+		p.gameObject.GetComponent<AspectRatioFitter>().aspectRatio = 0.5f;
+		Debug.Log ("polizia: " + p.gameObject.transform.localScale);
+
 	}
 
 	private void createGeneInformation(JsonData data){
