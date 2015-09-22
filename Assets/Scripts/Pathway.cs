@@ -13,5 +13,9 @@ public class Pathway : MonoBehaviour
 	void Start() {
 		
 	}
+
+	public void OnMouseDown() {
+		Debug.Log ("Clicked on pathway: " + name);
+	}
 }
 

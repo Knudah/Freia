@@ -13,6 +13,10 @@ public class Gene : MonoBehaviour
 	public int height;
 	public List<int> edges;
 
+	public void OnMouseDown() {
+		Debug.Log ("Clicked on gene: " + name + " id: " + id);
+	}
+
 	public void colorize() {
 	
 	}
@@ -23,5 +27,9 @@ public class Gene : MonoBehaviour
 
 	public void clearHighlight() {
 	
+	}
+
+	public void Start() {
+
 	}
 }
