@@ -40,5 +40,13 @@ public class Move : MonoBehaviour {
 		if (Input.GetKey (KeyCode.Escape)) {
 			Destroy(gameObject);
 		}
+
+		if (Input.GetKey (KeyCode.Backspace)) {
+			for(int i = 0; i < transform.childCount; i++) {
+				if (transform.GetChild(i).tag == "Gene Box") {
+					transform.GetChild(i).GetComponent<Gene>().clearHighlight();
+				}
+			}
+		}
 	}
 }

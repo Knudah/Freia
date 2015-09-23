@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 using UnityEngine.UI;
 using LitJson;
 
@@ -12,6 +13,7 @@ public class LoadPathway : MonoBehaviour {
 	private int height;
 
 	public void Start() {
+		gameObject.transform.localScale = new Vector2 (0.6f, 0.6f);
 		pathwayImage = gameObject.transform.GetComponent<Image>();
 		GetPathwayKGML ();
 		GetPathwayImage ();
@@ -95,7 +97,7 @@ public class LoadPathway : MonoBehaviour {
 	private void createPathwayInformation(JsonData data) {
 		Transform p = (Transform) Instantiate (pathwayBox, gameObject.transform.position, gameObject.transform.rotation);
 		p.SetParent(gameObject.transform);
-		p.gameObject.GetComponent<Pathway>().name = data["name"].ToString();
+		p.gameObject.GetComponent<Pathway>().name = data["name"].ToString().Replace("path:", String.Empty);
 		p.gameObject.GetComponent<Pathway>().description = data["description"].ToString();
 		p.gameObject.GetComponent<Pathway>().xPosition = int.Parse(data["x"].ToString());
 		p.gameObject.GetComponent<Pathway>().yPosition = int.Parse(data["y"].ToString());

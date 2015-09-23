@@ -11,8 +11,6 @@ public class ResultHandler : MonoBehaviour {
 		gameObject.AddComponent <BoxCollider2D>();
 		gameObject.GetComponent<BoxCollider2D> ().size = new Vector2(gameObject.transform.parent.GetComponent<RectTransform> ().rect.width, 45);
 		gameObject.GetComponent<BoxCollider2D> ().offset = new Vector2 (170, -20);
-//		Debug.Log (gameObject.transform.parent.GetComponent<RectTransform> ().rect.width);
-		//		Debug.Log(pathwayId);
 	}
 
 	public void OnMouseDown() {
