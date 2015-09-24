@@ -19,6 +19,7 @@ public class Gene : MonoBehaviour
 	private Color normalColor = new Color32(255, 255, 255, 0);
 	private Color normalHighlightColor = new Color32(255, 255, 0, 100);
 	private Color highlightColor = new Color32(100, 100, 0, 150);
+	private Color colorizedColor;
 
 
 	public void OnMouseDown() {
