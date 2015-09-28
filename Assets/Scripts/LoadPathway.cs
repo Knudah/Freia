@@ -69,25 +69,25 @@ public class LoadPathway : MonoBehaviour {
 			return;
 		}
 
+		//Retrieve image structures from JSON
 		for (int i = 0; i < objs[0].Count; i++) {
 			if (objs[0][i]["shape"].ToString().Contains("roundrectangle")){
-//				Debug.Log("pathway");
 				createPathwayInformation(objs[0][i]);
 
 			} else if (objs[0][i]["shape"].ToString().Contains("rectangle")){
 				if (string.Compare(objs[0][i]["name"].ToString(), "bg") == 0){ //do not include the bg img
 					continue;
 				}
-//				Debug.Log("gene");
 				createGeneInformation(objs[0][i]);
 
 			} else if (objs[0][i]["shape"].ToString().Contains("circle")){
-//				Debug.Log("compound");
+				// This is a compound, not used in current implementation
 			} else {
-				Debug.Log("what am I?");
+				Debug.Log("Kvik has a new structure which is not handled.");
 			}
 		}
 
+		//Retrieve interactions between the genes
 		for (int i = 0; i < objs[1].Count; i++) {
 			gameObject.GetComponent<Pathway>().width = 360;
 		}
@@ -115,7 +115,7 @@ public class LoadPathway : MonoBehaviour {
 	}
 
 	private int calculateY(int boxY, int boxHeight){
-		return (-1 * height/2 + boxY - boxHeight/2) *-1;
+		return ((-1 * height/2) + boxY - boxHeight/2) *-1;
 	}
 
 	private void createGeneInformation(JsonData data){

@@ -12,20 +12,19 @@ public class Gene : MonoBehaviour
 	public int yPosition;
 	public int width;
 	public int height;
+	public Tools.Regulated regulated;
 	public List<int> edges;
-	private bool enlighted;
+	private bool highlighted;
 	private Button geneButton;
 	private ColorBlock geneBlock;
 	private Color normalColor = new Color32(255, 255, 255, 0);
 	private Color normalHighlightColor = new Color32(255, 255, 0, 100);
 	private Color highlightColor = new Color32(100, 100, 0, 150);
-	private Color colorizedColor;
-
 
 	public void OnMouseDown() {
-		if (!enlighted) {
+		if (!highlighted) {
 			Debug.Log("Highlight: " + name);
-			highlight ();
+			Highlight ();
 
 		} else {
 			Debug.Log("Clear highlight: " + name);
@@ -33,17 +32,30 @@ public class Gene : MonoBehaviour
 		}
 	}
 
-	public void colorize() {
-	
+	public void Colorise(int value) {
+		geneBlock.highlightedColor = highlightColor;
+		geneBlock.pressedColor = normalColor;
+		switch(regulated)
+		{
+			case Tools.Regulated.unknown:
+				break;
+			case Tools.Regulated.up:
+				geneBlock.normalColor = new Color32(255, 0, 0, (byte)value);
+				break;
+			case Tools.Regulated.down:
+				geneBlock.normalColor = new Color32(255, 0, 255, (byte)value);
+				break;
+		}
+		geneButton.colors = geneBlock;
 	}
 
-	private void highlight() {
+	public void Highlight() {
 		geneBlock.normalColor = normalHighlightColor;
 		geneBlock.highlightedColor = highlightColor;
 		geneBlock.pressedColor = normalColor;
 
 		geneButton.colors = geneBlock;
-		enlighted = true;
+		highlighted = true;
 	}
 
 	public void clearHighlight() {
@@ -52,12 +64,13 @@ public class Gene : MonoBehaviour
 		geneBlock.pressedColor = normalColor;
 		
 		geneButton.colors = geneBlock;
-		enlighted = false;
+		highlighted = false;
 	}
 
 	public void Start() {
 		geneButton = gameObject.GetComponent<Button>();
 		geneBlock = geneButton.colors;
-		enlighted = false;
+		highlighted = false;
+		regulated = Tools.RandomRegulated ();
 	}
 }

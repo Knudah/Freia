@@ -7,31 +7,39 @@ public class ResultHandler : MonoBehaviour {
 	private Transform pathwaysParent;
 	private ApplicationLogic AppLogic;
 
-	public void Start(){
+	public void Start() {
 		pathwaysParent = GameObject.FindWithTag("PathwayParent").transform;
-		Transform AppWindow = GameObject.FindGameObjectWithTag ("Application Window").transform;
-		AppLogic = AppWindow.GetComponent<ApplicationLogic> ();
-		gameObject.AddComponent <BoxCollider2D>();
-		gameObject.GetComponent<BoxCollider2D> ().size = new Vector2(gameObject.transform.parent.GetComponent<RectTransform> ().rect.width, 45);
-		gameObject.GetComponent<BoxCollider2D> ().offset = new Vector2 (170, -20);
+		Transform AppWindow = GameObject.FindGameObjectWithTag("Application Window").transform;
+		AppLogic = AppWindow.GetComponent<ApplicationLogic>();
+		CreateResultButton ();
 	}
 
 	public void OnMouseDown() {
-		Transform p = (Transform) Instantiate (pathway, pathwaysParent.position, pathwaysParent.rotation);
-		p.transform.SetParent (pathwaysParent);
-		p.GetComponentInChildren<LoadPathway> ().pathwayId = pathwayId;
+		Transform p = (Transform) Instantiate(pathway, pathwaysParent.position, pathwaysParent.rotation);
+		p.transform.SetParent(pathwaysParent);
+		p.GetComponentInChildren<LoadPathway>().pathwayId = pathwayId;
 
-		for(int i = 0; i < transform.parent.childCount; i++) {
-			Destroy(transform.parent.GetChild(i).transform.gameObject);
-		}
-		AppLogic.ToggleSearchMenu ();
+		RemoveSearchResult ();
+		AppLogic.TogglePathwaySearchMenu();
 	}
 
-	public void Update(){ 
+	public void Update() { 
 		if (Input.GetKey (KeyCode.Escape)) {
-			for(int i = 0; i < transform.parent.childCount; i++) {
-				Destroy(transform.parent.GetChild(i).transform.gameObject);
-			}
+			RemoveSearchResult();
 		}
-	}	
+	}
+
+	void RemoveSearchResult(){
+		foreach (Transform result in transform.parent) {
+			Destroy(result.gameObject);
+		}
+	}
+
+	void CreateResultButton() {
+		gameObject.transform.localScale = new Vector2 (1, 1);
+		gameObject.GetComponent<RectTransform> ().sizeDelta = new Vector2(gameObject.transform.parent.GetComponent<RectTransform>().rect.width, 45);
+		gameObject.AddComponent<BoxCollider2D>();
+		gameObject.GetComponent<BoxCollider2D>().size = new Vector2(gameObject.transform.GetComponent<RectTransform>().rect.width, gameObject.transform.GetComponent<RectTransform>().rect.height);
+		gameObject.GetComponent<BoxCollider2D>().offset = new Vector2 (gameObject.transform.GetComponent<RectTransform>().rect.width/2, gameObject.transform.GetComponent<RectTransform>().rect.height/2 *-1);	
+	}
 }

@@ -3,10 +3,10 @@ using UnityEngine.UI;
 using System.Collections;
 using LitJson;
 
-public class Searchbar : MonoBehaviour {
+public class SearchbarPathway : MonoBehaviour {
 
 	[SerializeField]
-	private InputField nameInputField = null; // Assign in editor
+	private InputField nameInputField = null;
 	public Transform result;
 	public Transform searchResult;
 
@@ -27,7 +27,6 @@ public class Searchbar : MonoBehaviour {
 		yield return www;
 		// check for errors
 		if (www.error == null) {
-//			Debug.Log("WWW Ok!: " + www.text);
 			ParseJson(www.text);
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
@@ -48,14 +47,12 @@ public class Searchbar : MonoBehaviour {
 			Debug.Log ("Could not find result!");
 			return;
 		}
-//		Debug.Log (test[0].Count);
+
 		for (int i = 0; i < test[0].Count; i++) {
 
 			if(test[0][i]["id"].ToString().Contains("hsa")){
 				CreateSearchResult(test[0][i]["value"].ToString(), test[0][i]["id"].ToString());
-//				Debug.Log("TRUE: " + test[0][i]["id"].ToString());
 			}
-//			Debug.Log(test[0][i]["value"].ToString());
 		}
 	}
 }
