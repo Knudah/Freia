@@ -45,8 +45,9 @@ public class ApplicationLogic : MonoBehaviour {
 		foreach (Transform Pathway in pathwaysParent) {
 			foreach(Transform obj in Pathway){
 				if (obj.tag == "Gene Box"){
-					obj.GetComponent<Gene>().Colorise(value);
-				}		
+					obj.GetComponent<Gene>().SetTransparency(value);
+					obj.GetComponent<Gene>().Colorise();
+				}
 			}
 		}
 	}

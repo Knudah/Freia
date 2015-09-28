@@ -12,8 +12,9 @@ public class Gene : MonoBehaviour
 	public int yPosition;
 	public int width;
 	public int height;
-	public Tools.Regulated regulated;
 	public List<int> edges;
+	public int transparency;
+	private Tools.Regulated regulated;
 	private bool highlighted;
 	private Button geneButton;
 	private ColorBlock geneBlock;
@@ -32,18 +33,19 @@ public class Gene : MonoBehaviour
 		}
 	}
 
-	public void Colorise(int value) {
+	public void Colorise() {
 		geneBlock.highlightedColor = highlightColor;
 		geneBlock.pressedColor = normalColor;
 		switch(regulated)
 		{
 			case Tools.Regulated.unknown:
+				geneBlock.normalColor = normalColor;
 				break;
 			case Tools.Regulated.up:
-				geneBlock.normalColor = new Color32(255, 0, 0, (byte)value);
+				geneBlock.normalColor = new Color32(255, 0, 0, (byte)transparency);
 				break;
 			case Tools.Regulated.down:
-				geneBlock.normalColor = new Color32(255, 0, 255, (byte)value);
+				geneBlock.normalColor = new Color32(255, 0, 255, (byte)transparency);
 				break;
 		}
 		geneButton.colors = geneBlock;
@@ -59,12 +61,12 @@ public class Gene : MonoBehaviour
 	}
 
 	public void clearHighlight() {
-		geneBlock.normalColor = normalColor;
-		geneBlock.highlightedColor = highlightColor;
-		geneBlock.pressedColor = normalColor;
-		
-		geneButton.colors = geneBlock;
+		Colorise ();
 		highlighted = false;
+	}
+
+	public void SetTransparency(int value){
+		transparency = value;
 	}
 
 	public void Start() {
