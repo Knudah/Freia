@@ -52,7 +52,6 @@ public class ApplicationLogic : MonoBehaviour {
 		}
 	}
 
-
 	public void TogglePathwaySearchMenu() {
 		if (Search_Pathway_UI.gameObject.activeSelf) {
 			Search_Pathway_UI.gameObject.SetActive(false);
@@ -118,5 +117,4 @@ public class ApplicationLogic : MonoBehaviour {
 			child.GetComponent<BoxCollider2D>().enabled = active;
 		}
 	}
-
 }

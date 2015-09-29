@@ -13,7 +13,7 @@ public class Gene : MonoBehaviour
 	public int width;
 	public int height;
 	public List<int> edges;
-	public int transparency;
+	private int transparency;
 	private Tools.Regulated regulated;
 	private bool highlighted;
 	private Button geneButton;
@@ -21,16 +21,25 @@ public class Gene : MonoBehaviour
 	private Color normalColor = new Color32(255, 255, 255, 0);
 	private Color normalHighlightColor = new Color32(255, 255, 0, 100);
 	private Color highlightColor = new Color32(100, 100, 0, 150);
+	private Color pathColor = new Color32(0, 0, 255, 150);
 
+	
 	public void OnMouseDown() {
-		if (!highlighted) {
-			Debug.Log("Highlight: " + name);
-			Highlight ();
-
-		} else {
-			Debug.Log("Clear highlight: " + name);
-			clearHighlight ();
+		switch (highlighted) {
+			case true:
+				clearHighlight();
+				break;
+			case false:
+				Highlight();
+				break;
 		}
+	}
+
+	public void Path() {
+		geneBlock.highlightedColor = highlightColor;
+		geneBlock.pressedColor = normalColor;
+		geneBlock.normalColor = pathColor;
+		geneButton.colors = geneBlock;
 	}
 
 	public void Colorise() {

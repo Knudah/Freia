@@ -83,16 +83,21 @@ public class LoadPathway : MonoBehaviour {
 			} else if (objs[0][i]["shape"].ToString().Contains("circle")){
 				// This is a compound, not used in current implementation
 			} else {
-				Debug.Log("Kvik has a new structure which is not handled.");
+				Debug.Log("Kvik has a new structure which is not handled yet.");
 			}
 		}
 
 		//Retrieve interactions between the genes
 		for (int i = 0; i < objs[1].Count; i++) {
-			gameObject.GetComponent<Pathway>().width = 360;
+			foreach(Transform obj in gameObject.transform){
+				if (obj.tag == "Gene Box"){
+					if (obj.GetComponent<Gene>().id.Equals((int) objs[1][i]["source"])){
+						obj.GetComponent<Gene>().edges.Add((int) objs[1][i]["target"]);
+					}
+				}
+			}
 		}
 	}
-
 
 	private void createPathwayInformation(JsonData data) {
 		Transform p = (Transform) Instantiate (pathwayBox, gameObject.transform.position, gameObject.transform.rotation);

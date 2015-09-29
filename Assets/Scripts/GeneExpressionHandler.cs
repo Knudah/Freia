@@ -8,5 +8,4 @@ public class GeneExpressionHandler : MonoBehaviour {
 	void Start () {
 		pathwaysParent = GameObject.FindWithTag("PathwayParent").transform;
 	}
-
 }
