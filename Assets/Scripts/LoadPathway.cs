@@ -21,14 +21,14 @@ public class LoadPathway : MonoBehaviour {
 
 	public void GetPathwayImage() {
 		string url = "http://localhost:8080/public/pathways/" + pathwayId + ".png";
-		Debug.Log (url);
+		//Debug.Log (url);
 		WWW www = new WWW(url);
 		StartCoroutine(WaitForImageRequest(www));
 	}
 	
 	public void GetPathwayKGML() {
 		string url = "http://localhost:8080/pathway/" + pathwayId + "/json";
-		Debug.Log (url);
+		//Debug.Log (url);
 		WWW www = new WWW(url);
 		StartCoroutine(WaitForKGMLRequest(www));
 	}
@@ -49,17 +49,19 @@ public class LoadPathway : MonoBehaviour {
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		} 
+		//Debug.Log ("Time used IMAGE: " + (Time.time - ExperimentScript.GetStartTime()).ToString());
 	}
 
 	IEnumerator WaitForKGMLRequest(WWW www) {
 		yield return www;
 		// check for errors
 		if (www.error == null) {
-			Debug.Log("WWW Ok!: " + www.text);
+			//Debug.Log("WWW Ok!: " + www.text);
 			ParseJson(www.text);
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		} 
+		//Debug.Log ("Time used KGML: " + (Time.time - ExperimentScript.GetStartTime()).ToString());
 	}
 
 	private void ParseJson(string json) {

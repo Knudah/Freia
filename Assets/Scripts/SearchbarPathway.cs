@@ -35,7 +35,7 @@ public class SearchbarPathway : MonoBehaviour {
 
 	private void CreateSearchResult(string resultName, string resultId) {
 		Transform r = (Transform) Instantiate (result, searchResult.position, searchResult.rotation);
-		r.transform.SetParent (searchResult);
+		r.SetParent (searchResult);
 		r.GetComponentInChildren<Text> ().text = resultName;
 		r.GetComponentInChildren<ResultHandler> ().pathwayId = resultId;
 	}
@@ -56,15 +56,3 @@ public class SearchbarPathway : MonoBehaviour {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-

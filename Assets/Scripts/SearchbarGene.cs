@@ -28,15 +28,3 @@ public class SearchbarGene : MonoBehaviour {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
